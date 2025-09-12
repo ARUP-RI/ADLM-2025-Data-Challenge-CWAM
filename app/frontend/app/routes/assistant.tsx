@@ -7,7 +7,7 @@ import { ThreadList } from "~/components/assistant-ui/thread-list";
 
 export const Assistant = () => {
   const runtime = useChatRuntime({
-    api: "/api/chat",
+    api: "/api/chat/test",
   });
 
   return (
