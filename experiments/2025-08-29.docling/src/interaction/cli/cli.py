@@ -1,3 +1,4 @@
+import json
 from logging import getLogger
 from pathlib import Path
 
@@ -67,6 +68,14 @@ def test1(pdf: str) -> None:
     print(doc_md)
 
 
+VLM_PROMPT = """
+OCR the full page.
+
+- You MUST output only the text content, without an intro or outro.
+- DO NOT output any other text besides the OCR result. For example DO NOT include something like "Here's the OCR result:".
+"""
+
+
 def ollama_vlm_options(model: str, prompt: str) -> ApiVlmOptions:
     return ApiVlmOptions(
         url=f"{settings.ollama_api_url}/v1/chat/completions",
@@ -84,14 +93,22 @@ def ollama_vlm_options(model: str, prompt: str) -> ApiVlmOptions:
     type=click.Path(exists=True, dir_okay=False, readable=True),
     required=True,
 )
-def test2(pdf: str) -> None:
+@click.option(
+    "--output-dir",
+    "-o",
+    type=click.Path(dir_okay=True, writable=True),
+    default=".",
+)
+def test2(pdf: str, output_dir: str) -> None:
+    logger.info("Running VLM pipeline with Ollama backend.")
     pipeline_options = VlmPipelineOptions(
-        enable_remote_services=True  # <-- this is required!
+        enable_remote_services=True,
+        force_backend_text=True,
     )
 
     pipeline_options.vlm_options = ollama_vlm_options(
         model=settings.ollama_model,
-        prompt="OCR the full page to markdown.",
+        prompt="OCR the full page.",
     )
 
     doc_converter = DocumentConverter(
@@ -104,4 +121,9 @@ def test2(pdf: str) -> None:
     )
 
     result = doc_converter.convert(pdf)
-    print(result.document.export_to_markdown())
+
+    markdown = result.document.export_to_markdown()
+    Path(Path(output_dir) / "output.md").write_text(markdown, encoding="utf-8")
+
+    data = json.dumps(result.document.export_to_dict(), indent=2)
+    Path(Path(output_dir) / "output.json").write_text(data, encoding="utf-8")
