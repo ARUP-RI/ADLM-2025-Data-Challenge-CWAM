@@ -27,10 +27,9 @@ run-backend:
 build-frontend:
 # Build the frontend application
 	@echo "Building frontend application..."
-	cd $(FRONT_END_DIR) && npm cache clean --force && npm install && npm run build
+	cd $(FRONT_END_DIR) && npm install && npm cache clean --force && npm install && npm run build
 
 run-frontend:
 # Run the frontend application in development mode
 	@echo "Running frontend application in development mode..."
-	$(MAKE) build-frontend
 	cd $(FRONT_END_DIR) && npm run dev
