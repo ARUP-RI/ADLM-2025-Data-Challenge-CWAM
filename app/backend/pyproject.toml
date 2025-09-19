@@ -3,7 +3,15 @@ name = "ADLM-2025-Data-Challenge-CWAM"
 version = "0.1.0"
 description = "Team CWAM's data challenge project for ADLM 2025"
 requires-python = ">=3.13"
-dependencies = ["fastapi", "gunicorn", "uvicorn", "pydantic", "fire"]
+dependencies = [
+    "fastapi",
+    "gunicorn",
+    "uvicorn",
+    "pydantic",
+    "fire",
+    "openai",
+    "python-dotenv",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/app", "src/scripts"]
