@@ -6,6 +6,13 @@ download-pdfs:
     "https://zenodo.org/records/16328490/files/LabDocs.zip?download=1"
 	unzip -o ./resources/labdocs.zip -d ./resources/
 
+build-docker:
+# Build the Docker containers
+	@echo "Building Docker containers..."
+	docker-compose up -d
+	sleep 5
+	docker exec -it ollama ollama pull qwen3:4b
+
 build-backend:
 # Build the backend application
 	@echo "Building backend application..."
@@ -20,10 +27,9 @@ run-backend:
 build-frontend:
 # Build the frontend application
 	@echo "Building frontend application..."
-	cd $(FRONT_END_DIR) && npm install && npm run build
+	cd $(FRONT_END_DIR) && npm install && npm cache clean --force && npm install && npm run build
 
 run-frontend:
 # Run the frontend application in development mode
 	@echo "Running frontend application in development mode..."
-	$(MAKE) build-frontend
 	cd $(FRONT_END_DIR) && npm run dev

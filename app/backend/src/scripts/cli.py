@@ -1,9 +1,12 @@
 import os
 import subprocess
 import sys
+from dotenv import load_dotenv
 
 
 def start_api():
+    load_dotenv()  # Load environment variables from a .env file if present
+
     cmd = [sys.executable, "-m", "gunicorn", "app.api:app"]
 
     options = {
